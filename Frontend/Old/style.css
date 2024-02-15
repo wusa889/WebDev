@@ -1,0 +1,86 @@
+.big {
+    font-size: 24px;
+    text-decoration: overline;
+   background-color: aliceblue;
+}
+
+#key {
+    color: green;
+    background-color: aliceblue;
+}
+
+.red {
+    color: red;
+}
+
+.outdiv{
+  display: flex;
+  justify-content: center;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+}
+.innerdiv{
+    padding: 0;
+    border: 5px solid;
+    background-color: aqua;
+
+}
+table{
+    display: flex;
+    justify-content: center;
+}
+.listdiv1{
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: left;
+}
+.listdiv1{
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: right;
+}
+.textdiv{
+    text-align: center;
+}
+img{
+    display: block;
+    padding: 0px;
+    margin: 0px;
+}
+body{
+    padding-bottom: 0px;
+    margin: 0px;
+    background-image: url(pictures/Kadse.jpg);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100% 100%;
+
+}
+.pictures{
+    /*display: block;*/
+}
+.sidebox{
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    left: 0;
+    background: firebrick;
+    width: 200px;
+    height: 200px;
+    margin: 0;
+}
+.sideboxcenter{
+    margin: auto;
+    display: flex;
+}
+.formDiv{
+    background-color: aliceblue;
+    display: flex;
+    width: fit-content;
+}
+.centerMe{
+    display: flex;
+    justify-content: center;
+}

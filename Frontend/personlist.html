@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <!--  J-Query-Abhängigkeit -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <!--  Sweetalert2 -->
+    <script src=" https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js "></script>
+    <link href=" https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.min.css " rel="stylesheet">
+
+    <!--  Toastr -->
+    <script src=" https://cdn.jsdelivr.net/npm/toastr@2.1.4/toastr.min.js "></script>
+    <link href=" https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.css " rel="stylesheet">
+
+    <!--  Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+<script>
+    const rootPath = 'http://127.0.0.1:5500/Frontend/'
+    $(document).ready(function () {
+        loadDataAndInitTable();
+    });
+
+    function navToEdit(id) {
+        // `http://127.0.0.1:5500/Frontend/EditPerson.html?${id}`
+        window.location.href = `http://127.0.0.1:5500/Frontend/EditPerson.html?pid=${id}`;
+    }
+
+    let personlist = [];
+    function loadDataAndInitTable() {
+
+        //1.) frage server nach personen-daten via AJAX (siehe https://api.jquery.com/jQuery.ajax/#jQuery-ajax-url-settings)
+        //2.) im Erfolgsfall vom AJAX-Call die gelieferten Daten prozessieren - aus jedem JSON-Datensatz wird ein <TR> in der Tabelle
+        //3.) die DOM-Manipulation kann mit JQuery realisiert werden
+        //4.) Button auf der GUI, der das async-Nachladen auslösen würde
+
+        let persons = [];
+
+        $.get("http://localhost:3000/personlist",
+            (response) => {
+
+                persons = response;
+                $("#tbody").empty();
+
+                persons.forEach(person => {
+                    $("#tbody").append(`<tr><td>${person.id}</td><td>${person.vorname}</td><td>${person.nachname}</td><td>${person.alter}</td><td>${person.haarfarbe}</td><td><button class="btn btn-primary" onclick="navToEdit(${person.id})">Edit <i class="bi bi-pencil"></i></button></td><td><button class="btn btn-primary" onclick="deletePerson(${person.id})">Delete <i class="bi bi-trash3-fill"></i></button></td></tr>`);
+                });
+
+                personlist = persons
+            })
+            .fail((xhr, status, error) => {
+
+                console.log("Etwas ist schief gelaufen bei dem Laden der Personen!");
+                console.log(xhr);
+                console.log(status);
+                console.log(error);
+            });
+    }
+
+
+    function addButtonFunction() {
+        window.location.href = rootPath + 'NewPerson.html'
+    }
+
+    function testButton() {
+        toastr.options = {
+            "positionClass": "toast-bottom-center"
+        }
+        toastr.success("BLIN")
+
+        // Swal.fire({
+        //     title: 'error',
+        //     text: 'Error Boi',
+        //     icon: 'error',
+        //     confirmButtonText: 'cool'
+
+        // })
+    }
+
+    function deletePerson(id) {
+
+        let firstName = personlist.find(p => p.id == id).vorname
+        let lastName = personlist.find(p => p.id == id).nachname
+
+        Swal.fire({
+            title: "Are you sure?",
+            text: `Do you want to really delete ${firstName} ${lastName}`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `http://localhost:3000/person/${id}`,
+                    type: "DELETE",
+                    success: response => {
+                        console.log(response)
+                        loadDataAndInitTable();
+                    },
+                    error: (xhr, status, error) => {
+                        console.error("Error", error)
+                    }
+                })
+                toastr.options = {
+                    "positionClass": "toast-bottom-center"
+                }
+                toastr.success(`${firstName} ${lastName} was deleted!`)
+            }
+        });
+    }
+</script>
+
+<body>
+
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col">
+                <button id="addButton" onclick="addButtonFunction()" type="button" class="btn btn-primary btn-lg ">
+                    Add
+                    <i class="bi bi-plus-lg"></i>
+                </button>
+
+            </div>
+            <div class="col d-flex justify-content-end">
+                <button id="reset" class="btn btn-primary btn-lg" onclick="loadDataAndInitTable();">
+                    Reload
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                </button>
+            </div>
+        </div>
+
+        <table id="tabelle" class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Vorname</th>
+                    <th>Nachname</th>
+                    <th>Alter</th>
+                    <th>Haarfarbe</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody id="tbody">
+            </tbody>
+
+        </table>
+        <!-- <button onclick="testButton()">SweetAlertTest</button> -->
+</body>
+
+</div>
+
+</html>

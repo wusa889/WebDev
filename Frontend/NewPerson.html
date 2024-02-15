@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Person</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <!--  J-Query-Abhängigkeit -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <!--  Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <script>
+
+            function onSubmitForm(event) {
+
+            //don't post the form if submit is clicked
+            event.preventDefault();
+
+            //Vanilla JS
+            let form = document.getElementById('myform');
+            let formData = new FormData(form);
+
+            //Validation einbauen / erst abssenden, wenn die Daten soweit i.O. sind
+
+            //left side: server-object / right side: formdata-keys
+            let formDto = {
+                vorname: formData.get('vorname'),
+                nachname: formData.get('nachname'),
+                alter: formData.get('alter'),
+                haarfarbe: formData.get('haarfarbe')
+            };
+
+            console.log(formDto);
+
+            $.ajax({
+                url: 'http://localhost:3000/person',
+                type: 'POST',
+                contentType: 'application/json',
+                data: `${JSON.stringify(formDto)}`,
+                success: response => {
+                    console.log(response);
+                    document.getElementById('myform').reset();
+                    window.location.href = "http://127.0.0.1:5500/Frontend/personlist.html"
+                },
+                error: (xhr, status, error) => {
+                    console.error("Fehler ", error)
+                }
+            })
+        }
+
+    </script>
+</head>
+
+<body>
+    <div class="container mt-5 ">
+        <form id="myform" action="http://localhost:3000/person" method="post">
+            <div class="row d-flex justify-content-center">
+                <div class="col-4">
+                    <div class="mb-3">
+                        <label for="Vorname" class="form-label">Vorname:</label>
+                        <input class="form-control" type="text" id="vorname" name="vorname">
+                    </div>
+                </div>
+            </div>
+            <div class="row d-flex justify-content-center">
+                <div class="col-4">
+                    <div class="mb-3">
+                        <label for="Nachname" class="form-label">Nachname:</label>
+                        <input class="form-control" type="text" id="nachname" name="nachname">
+                    </div>
+                </div>
+            </div>
+            <div class="row d-flex justify-content-center">
+                <div class="col-4">
+                    <div class="mb-3">
+                        <label for="Alter" class="form-label">Alter:</label>
+                        <input class="form-control" type="number" id="age" name="alter">
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <h2 class="d-flex justify-content-center">Haarfarbe</h2>
+            </div>
+            <div class="row d-flex justify-content-center">
+                <div class="col d-flex justify-content-center">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="haarfarbe" id="blond" value="blond">
+                        <label class="form-check-label" for="blond">Blond</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="haarfarbe" id="braun" value="braun">
+                        <label class="form-check-label" for="braun">braun</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="haarfarbe" id="schwarz" value="schwarz">
+                        <label class="form-check-label" for="schwarz">schwarz</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="haarfarbe" id="blau" value="blau">
+                        <label class="form-check-label" for="blau">blau</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row d-flex justify-content-center">
+                <div class="col-4 d-flex justify-content-center">
+                    <button type="submit" onclick="onSubmitForm(event)" class="btn btn-primary flex-grow-1">Submit
+                        <i class="bi bi-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</body>
+
+</html>
